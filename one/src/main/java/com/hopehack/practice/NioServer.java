@@ -1,6 +1,4 @@
-package main.java.com.hopehack.practice.nio.one.server;
-
-import com.sun.org.apache.bcel.internal.generic.Select;
+package com.hopehack.practice;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -11,12 +9,6 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
-/**
- * TODO
- *
- * @author dongchao
- * @Date 2022/9/26 4:15 PM
- */
 public class NioServer {
 
     public static void start() throws IOException {
@@ -51,11 +43,13 @@ public class NioServer {
                         byteBuffer.clear();
                     }
 
+                    String readStr = new String(byteBuffer.array());
+                    System.out.print("" + readStr);
                     socketChannel.close();
                 }
                 selectionKeys.remove();
             }
-            serverSocketChannel.close();
+//            serverSocketChannel.close();
         }
     }
 

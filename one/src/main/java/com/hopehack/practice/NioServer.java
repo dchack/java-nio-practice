@@ -39,12 +39,15 @@ public class NioServer {
                     socketChannel.register(selector, SelectionKey.OP_READ);
                 } else if (selectionKey.isReadable()) {
                     SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
+                    // 分配一个新的字节缓冲区
                     ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+                    // 从Channel中读取数据到Buffer
                     while ((socketChannel.read(byteBuffer)) > 0) {
+                        // 翻转Buffer
                         byteBuffer.flip();
+                        // 清理Buffer
                         byteBuffer.clear();
                     }
-
                     String readStr = new String(byteBuffer.array());
                     System.out.print("" + readStr);
                     socketChannel.close();
@@ -54,7 +57,6 @@ public class NioServer {
 //            serverSocketChannel.close();
         }
     }
-
 
     public static void main(String[] args) throws IOException {
         start();

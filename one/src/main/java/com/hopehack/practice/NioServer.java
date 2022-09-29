@@ -31,9 +31,11 @@ public class NioServer {
                 SelectionKey selectionKey = selectionKeys.next();
                 // 就绪状态为Accept
                 if (selectionKey.isAcceptable()) {
+                    // 接受一个连接 得到一个SocketChannel
                     SocketChannel socketChannel = serverSocketChannel.accept();
+                    // 设置成非阻塞模式
                     socketChannel.configureBlocking(false);
-                    //
+                    // 把SocketChannel 注册到Selector 感兴趣的事件是读事件
                     socketChannel.register(selector, SelectionKey.OP_READ);
                 } else if (selectionKey.isReadable()) {
                     SocketChannel socketChannel = (SocketChannel) selectionKey.channel();

@@ -31,9 +31,9 @@ public class Server {
         ByteBuffer byteBuffer = ByteBuffer.allocate(2048);
 
         long currentTimeMillis = System.currentTimeMillis();
-        String localFile =  "/Users/"+currentTimeMillis;
+        String localFile =  "/Users/dongchao/"+currentTimeMillis;
 
-        if(selector.select() > 0) {
+        while(selector.select() > 0) {
             Set<SelectionKey> selectionKeys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = selectionKeys.iterator();
             while (iterator.hasNext()) {
@@ -43,6 +43,7 @@ public class Server {
                     SocketChannel socketChannel = serverSocketChannel1.accept();
                     socketChannel.configureBlocking(false);
                     socketChannel.register(selector, SelectionKey.OP_READ);
+
                 } else if (selectionKey.isReadable()) {
                     SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
                     socketChannel.read(byteBuffer);
@@ -55,9 +56,8 @@ public class Server {
                     FileOutputStream outputStream = new FileOutputStream(localFile);
                     outputStream.write(copyBytes);
                     outputStream.close();
-
-                    iterator.remove();
                 }
+                iterator.remove();
             }
         }
     }

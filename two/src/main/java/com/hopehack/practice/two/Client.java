@@ -17,14 +17,14 @@ import java.nio.channels.SocketChannel;
 public class Client {
 
     public static void start() throws IOException {
-        InetSocketAddress inetSocketAddress = new InetSocketAddress(12022);
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(20023);
         SocketChannel socketChannel = SocketChannel.open();
-        socketChannel.bind(inetSocketAddress);
+        socketChannel.connect(inetSocketAddress);
         ByteBuffer byteBuffer = ByteBuffer.allocate(2048);
-        FileChannel fileChannel =  new FileOutputStream("/User/dongchao/in").getChannel();
+        FileChannel fileChannel =  new FileInputStream("/Users/dongchao/in").getChannel();
         if (socketChannel.finishConnect()) {
-            fileChannel.read(byteBuffer);
             while (fileChannel.read(byteBuffer) > 0) {
+                byteBuffer.flip();
                 socketChannel.write(byteBuffer);
                 byteBuffer.clear();
             }

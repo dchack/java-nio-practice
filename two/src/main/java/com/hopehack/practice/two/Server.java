@@ -5,17 +5,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.util.Iterator;
 import java.util.Set;
 
 /**
- * send a file to remote server
+ * The server to receive file from a remote client by NIO
  *
- * @author dongchao
+ * @author hopehack
  * @Date 2022/10/8 5:17 PM
  */
 public class Server {
@@ -32,7 +29,9 @@ public class Server {
 
         long currentTimeMillis = System.currentTimeMillis();
         String localFile =  "/Users/dongchao/"+currentTimeMillis;
-
+        FileOutputStream fos = new FileOutputStream(localFile);
+        FileChannel outFileChannel = fos.getChannel();
+        long outLength = 0;
         while(selector.select() > 0) {
             Set<SelectionKey> selectionKeys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = selectionKeys.iterator();
@@ -47,19 +46,18 @@ public class Server {
                 } else if (selectionKey.isReadable()) {
                     SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
                     socketChannel.read(byteBuffer);
-
-                    int remaining = byteBuffer.remaining();
-                    int capacity = byteBuffer.capacity();
-                    byte[] copyBytes = new byte[capacity - remaining];
-                    byteBuffer.get(copyBytes, 0, capacity - remaining);
-
-                    FileOutputStream outputStream = new FileOutputStream(localFile);
-                    outputStream.write(copyBytes);
-                    outputStream.close();
+                    byteBuffer.flip();
+                    int length = 0;
+                    while ((length = outFileChannel.write(byteBuffer)) != -1) {
+                        outLength = outLength + length;
+                    }
                 }
                 iterator.remove();
             }
+            System.out.print("file length : " + outLength);
         }
+        fos.close();
+        outFileChannel.close();
     }
 
     public static void main(String[] args) throws IOException {

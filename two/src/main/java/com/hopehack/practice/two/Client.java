@@ -9,7 +9,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 
 /**
- * TODO
+ * The client send a file to remote server by NIO.
  *
  * @author dongchao
  * @Date 2022/10/11 10:50 PM

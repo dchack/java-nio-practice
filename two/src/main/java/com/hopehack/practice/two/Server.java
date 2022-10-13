@@ -25,10 +25,8 @@ public class Server {
         serverSocketChannel.bind(new InetSocketAddress(20023));
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-        ByteBuffer byteBuffer = ByteBuffer.allocate(2048);
-
         long currentTimeMillis = System.currentTimeMillis();
-        String localFile =  "/Users/dongchao/"+currentTimeMillis;
+        String localFile =  "/Users/dongchao/" + currentTimeMillis;
         FileOutputStream fos = new FileOutputStream(localFile);
         FileChannel outFileChannel = fos.getChannel();
         long outLength = 0;
@@ -45,11 +43,18 @@ public class Server {
 
                 } else if (selectionKey.isReadable()) {
                     SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
-                    socketChannel.read(byteBuffer);
-                    byteBuffer.flip();
                     int length = 0;
-                    while ((length = outFileChannel.write(byteBuffer)) != -1) {
+                    ByteBuffer byteBuffer = ByteBuffer.allocate(204800);
+                    while ((length = socketChannel.read(byteBuffer)) > 0) {
+                        byteBuffer.flip();
+                        outFileChannel.write(byteBuffer);
                         outLength = outLength + length;
+                        byteBuffer.clear();
+                        outFileChannel.force(true);
+                    }
+                    // read 返回-1 客户端关闭连接
+                    if (length < 0) {
+                        socketChannel.close();
                     }
                 }
                 iterator.remove();

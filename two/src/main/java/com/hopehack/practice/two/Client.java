@@ -20,8 +20,8 @@ public class Client {
         InetSocketAddress inetSocketAddress = new InetSocketAddress(20023);
         SocketChannel socketChannel = SocketChannel.open();
         socketChannel.connect(inetSocketAddress);
-        ByteBuffer byteBuffer = ByteBuffer.allocate(2048);
-        FileChannel fileChannel =  new FileInputStream("/Users/dongchao/in").getChannel();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(204800);
+        FileChannel fileChannel =  new FileInputStream("/Users/dongchao/test").getChannel();
         if (socketChannel.finishConnect()) {
             while (fileChannel.read(byteBuffer) > 0) {
                 byteBuffer.flip();

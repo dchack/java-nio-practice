@@ -22,7 +22,7 @@ public class Reactor implements Runnable{
         serverSocketChannel.configureBlocking(false);
         serverSocketChannel.bind(new InetSocketAddress(20011));
         SelectionKey selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-        selectionKey.attach(new AcceptorHandler());
+        selectionKey.attach(new AcceptorHandler(serverSocketChannel, selector));
     }
 
     @Override
@@ -48,22 +48,6 @@ public class Reactor implements Runnable{
         Runnable handler = (Runnable) selectionKey.attachment();
         if(handler != null) {
             handler.run();
-        }
-    }
-
-
-    class AcceptorHandler implements Runnable {
-
-        @Override
-        public void run() {
-            try {
-                SocketChannel socketChannel = serverSocketChannel.accept();
-                if (socketChannel != null) {
-                    new IOHandler(selector, socketChannel);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

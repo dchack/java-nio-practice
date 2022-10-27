@@ -37,7 +37,7 @@ public class NioServer {
                     socketChannel.configureBlocking(false);
                     // 把SocketChannel 注册到Selector 感兴趣的事件是读事件
                     socketChannel.register(selector, SelectionKey.OP_READ);
-                } else if (selectionKey.isReadable()) {
+                } else if (selectionKey.isValid() && selectionKey.isReadable()) {
                     SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
                     // 分配一个新的字节缓冲区
                     ByteBuffer byteBuffer = ByteBuffer.allocate(1024);

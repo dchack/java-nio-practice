@@ -17,6 +17,7 @@ public class IOHandler implements Runnable{
     SocketChannel socketChannel;
     SelectionKey selectionKey;
     ByteBuffer byteBuffer = ByteBuffer.allocate(2048);
+    int state = 0;
 
     public IOHandler(Selector selector, SocketChannel socketChannel) throws IOException {
         this.socketChannel = socketChannel;
@@ -29,6 +30,23 @@ public class IOHandler implements Runnable{
 
     @Override
     public void run() {
+        try{
+            if (state == 0) {
+                int length =  0;
+                while ((length = socketChannel.read(byteBuffer)) > 0) {
 
+                }
+                byteBuffer.flip();
+                selectionKey.interestOps(SelectionKey.OP_WRITE);
+                state = 1;
+            } else if(state == 1) {
+                socketChannel.write(byteBuffer);
+                byteBuffer.clear();
+                selectionKey.interestOps(SelectionKey.OP_READ);
+                state = 0;
+            }
+        } catch (Exception e) {
+
+        }
     }
 }

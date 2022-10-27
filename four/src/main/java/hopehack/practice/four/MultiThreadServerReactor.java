@@ -27,14 +27,14 @@ public class MultiThreadServerReactor {
         serverSocketChannel.bind(address);
         serverSocketChannel.configureBlocking(false);
         SelectionKey sk1 =  serverSocketChannel.register(selectors[0], SelectionKey.OP_ACCEPT);
-        sk1.attach(new AcceptorHandler());
+        sk1.attach(new AcceptorHandler(selectors[0], serverSocketChannel));
 
         SelectionKey sk2 = serverSocketChannel.register(selectors[1], SelectionKey.OP_ACCEPT);
-        sk2.attach(new AcceptorHandler());
+        sk2.attach(new AcceptorHandler(selectors[1], serverSocketChannel));
 
         SubReactor subReactor1 = new SubReactor(selectors[0]);
         SubReactor subReactor2 = new SubReactor(selectors[1]);
-        SubReactor[] subReactors = new SubReactor[]{subReactor1, subReactor2};
+        subReactors = new SubReactor[]{subReactor1, subReactor2};
     }
 
     private void startService() {
@@ -43,5 +43,9 @@ public class MultiThreadServerReactor {
         }
     }
 
+    public static void main(String[] args) throws IOException {
+        MultiThreadServerReactor multiThreadServerReactor = new MultiThreadServerReactor();
+        multiThreadServerReactor.startService();
+    }
 
 }

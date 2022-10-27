@@ -15,7 +15,6 @@ public class SubReactor implements Runnable{
 
     private Selector selector;
 
-
     public SubReactor(Selector selector) {
         this.selector = selector;
     }
@@ -29,7 +28,7 @@ public class SubReactor implements Runnable{
                 Iterator<SelectionKey> it = selectionKeys.iterator();
                 while (it.hasNext()) {
                     SelectionKey sk = it.next();
-
+                    dispatch(sk);
                 }
                 selectionKeys.clear();
             }
@@ -37,5 +36,12 @@ public class SubReactor implements Runnable{
 
         }
 
+    }
+
+    private void dispatch(SelectionKey selectionKey) {
+        Runnable handler = (Runnable) selectionKey.attachment();
+        if(handler != null) {
+            handler.run();
+        }
     }
 }

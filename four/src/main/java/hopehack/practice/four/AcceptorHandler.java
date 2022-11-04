@@ -27,7 +27,9 @@ public class AcceptorHandler implements Runnable {
         SocketChannel socketChannel = null;
         try {
             socketChannel = serverSocketChannel.accept();
-            new IOHandler(selector, socketChannel);
+            if (socketChannel != null) {
+                new IOHandler(selector, socketChannel);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

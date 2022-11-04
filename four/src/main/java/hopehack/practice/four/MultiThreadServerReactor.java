@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MultiThreadServerReactor {
 
     private ServerSocketChannel serverSocketChannel;
-    private AtomicInteger next = new AtomicInteger(0);
+
     private Selector[] selectors = new Selector[2];
     private SubReactor[] subReactors = null;
     MultiThreadServerReactor() throws IOException {
@@ -39,7 +39,7 @@ public class MultiThreadServerReactor {
 
     private void startService() {
         for (int i = 0; i < subReactors.length; i++) {
-            new Thread(subReactors[i]);
+            new Thread(subReactors[i]).start();
         }
     }
 

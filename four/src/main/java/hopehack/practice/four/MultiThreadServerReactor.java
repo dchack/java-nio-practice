@@ -26,12 +26,12 @@ public class MultiThreadServerReactor {
         InetSocketAddress address = new InetSocketAddress(20012);
         serverSocketChannel.bind(address);
         serverSocketChannel.configureBlocking(false);
+        // 注册多个ACCEPT事件监听
         SelectionKey sk1 =  serverSocketChannel.register(selectors[0], SelectionKey.OP_ACCEPT);
         sk1.attach(new AcceptorHandler(selectors[0], serverSocketChannel));
-
         SelectionKey sk2 = serverSocketChannel.register(selectors[1], SelectionKey.OP_ACCEPT);
         sk2.attach(new AcceptorHandler(selectors[1], serverSocketChannel));
-
+        // 准备多个Reactor
         SubReactor subReactor1 = new SubReactor(selectors[0]);
         SubReactor subReactor2 = new SubReactor(selectors[1]);
         subReactors = new SubReactor[]{subReactor1, subReactor2};

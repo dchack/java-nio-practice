@@ -23,11 +23,13 @@ public class SubReactor implements Runnable{
     public void run() {
         try {
             while (! Thread.interrupted()) {
+                // 等待IO事件
                 selector.select();
                 Set<SelectionKey> selectionKeys = selector.selectedKeys();
                 Iterator<SelectionKey> it = selectionKeys.iterator();
                 while (it.hasNext()) {
                     SelectionKey sk = it.next();
+                    // 分发
                     dispatch(sk);
                 }
                 selectionKeys.clear();
@@ -39,8 +41,10 @@ public class SubReactor implements Runnable{
     }
 
     private void dispatch(SelectionKey selectionKey) {
+        // 分发就是把attach的Handle拿出来执行
         Runnable handler = (Runnable) selectionKey.attachment();
         if(handler != null) {
+            // 在本线程上执行
             handler.run();
         }
     }

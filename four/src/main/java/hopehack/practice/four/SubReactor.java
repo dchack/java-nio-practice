@@ -41,10 +41,10 @@ public class SubReactor implements Runnable{
     }
 
     private void dispatch(SelectionKey selectionKey) {
-        // 分发就是把attach的Handle拿出来执行
+        // 分发就是把attach的Handle拿出来执行，注意这里是包括Accept和Read/Write事件key绑定的Handle统一到一个接口下
         Runnable handler = (Runnable) selectionKey.attachment();
         if(handler != null) {
-            // 在本线程上执行
+            // 在本线程上执行，这里就把select和handler执行分离开了
             handler.run();
         }
     }

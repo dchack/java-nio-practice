@@ -26,6 +26,7 @@ public class AcceptorHandler implements Runnable {
     public void run() {
         SocketChannel socketChannel = null;
         try {
+            // 老样子，对于Accept事件，就是拿到SocketChannel，然后监听R/W事件
             socketChannel = serverSocketChannel.accept();
             if (socketChannel != null) {
                 new IOHandler(selector, socketChannel);
